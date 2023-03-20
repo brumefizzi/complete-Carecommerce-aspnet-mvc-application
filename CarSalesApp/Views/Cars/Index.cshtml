@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Car>
+
+@{
+    ViewData["Title"] = "Our Car Inventory";
+}
+<div class="container">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner d-flex justify-content-center align-items-center">
+            <div class="carousel-item active">
+                <img class="d-block" src="~/Img/Car Manufacturer Logos/BigLAMBO.jpg" alt="First slide" style="width:300px; height:250px;">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block" src="~/Img/Car Manufacturer Logos/BigPORSCHE.jpg" alt="Second slide" style="width:300px; height:250px;">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block" src="~/Img/Car Manufacturer Logos/BigTESLA.jpg" alt="Third slide" style="width:300px; height:250px;">
+            </div>
+        </div>
+        <a class="carousel-control-prev text-dark" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next text-dark" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>       
+        </a>
+    </div>
+</div>
+<br />
+<div>
+    <p> BROWSE OUR CURRENT INVENTORY BELOW </p>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header text-white bg-body">
+                    <h5 class="card-title">
+                        @item.Year @item.Make @item.Model for sale
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a class="text-white float-end" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                        }
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="@item.ImageURL" class="img-fluid rounded-start" alt="@item.Make">
+                        </div>
+                        <div class="col-md-6">
+                            <p class="card-text"><b>Description: </b>@item.Description</p>
+                            <p class="card-text"><b>Make: </b>@item.Make</p>
+                            <p class="card-text"><b>Model: </b>@item.Model</p>
+                            <p class="card-text"><b>Body Type: </b>@item.BodyType</p>
+                            <p class="card-text"><b>Price: </b>@item.Price</p>
+                            <p class="card-text"><b>Colour: </b>@item.Colour</p>
+                            <p class="card-text"><b>Condition: </b>@item.Condition</p>
+                            <p class="card-text"><b>Date Listed: </b>@item.ListDate</p>
+                            <p class="card-text ">
+                                <b>Status: </b>
+                                @if (DateTime.Now >= item.ListDate && DateTime.Now <= item.AvailableDate)
+                                {
+                                    <span class="badge bg-success text-white">SOLD AS-IS</span>
+                                }
+                                else if (DateTime.Now > item.AvailableDate)
+                                {
+                                    <span class="badge bg-danger text-white">CERTIFIED</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary text-white">AVAILABLE</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p class="card-text">
+                        <a class="btn btn-outline-primary float-end" asp-action="Details" asp-route-id="@item.Id">
+                            <i class="bi bi-eye-fill"></i> Show Details
+                        </a>
+                        <a class="btn btn-danger text-white" asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Id">
+                            <i class="bi bi-cart-plus"></i> Add to Cart (Price @item.Price.ToString("c"))
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@await Html.PartialAsync("_CreateItem", "Cars")

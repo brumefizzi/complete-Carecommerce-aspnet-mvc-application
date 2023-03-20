@@ -1,0 +1,82 @@
+﻿@model Car
+
+@{
+    ViewData["Title"] = "Car Details";
+}
+
+<div class="row">
+
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <div class="card mb-12">
+                <div class="row g-0">
+                    <div class="col-md-12">
+                        <div class="card-header text-white bg-secondary">
+                            <p class="card-text">
+                                <h5 class="card-title">
+                                    @Model.Year @Model.Make @Model.Model
+                                </h5>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="@Model.ImageURL" width="270" alt=(@Model.Make)>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <p class="card-text"><b>Description: </b>@Model.Description
+                            </p>
+                            <p class="card-text">
+                            <b>Branch: </b>
+                            <a asp-controller="Branch" asp-action="Details" asp-route-id="@Model.BranchId">
+                                @Model.Branch.Name
+                            </a>
+                            </p>
+                            <p class="card-text">
+                                <b>Salesman: </b>
+                                <a asp-controller="Salesman" asp-action="Details" asp-route-id="@Model.SalesmanId">
+                                    @Model.Salesman.Name
+                                </a>
+                            </p>
+                            <p class="card-text"><b>Make: </b>@Model.Make</p>
+                            <p class="card-text"><b>Model: </b>@Model.Model</p>
+                            <p class="card-text"><b>Body Type: </b>@Model.BodyType</p>
+                            <p class="card-text"><b>Price: </b>@Model.Price</p>
+                            <p class="card-text"><b>Colour: </b>@Model.Colour</p>
+                            <p class="card-text"><b>Condition: </b>@Model.Condition</p>
+                            <p class="card-text"><b>Date Listed: </b>@Model.ListDate</p>
+                            <p class="card-text ">
+                                <b>Status: </b>
+                                @if (DateTime.Now >= Model.ListDate && DateTime.Now <= Model.AvailableDate)
+                                {
+                                    <span class="badge bg-success text-white">SOLD AS-IS</span>
+                                }
+                                else if (DateTime.Now > Model.AvailableDate)
+                                {
+                                    <span class="badge bg-danger text-white">CERTIFIED</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary text-white">AVAILABLE</span>
+                                }
+                            </p>
+                           
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card-footer">
+                            <p class="card-text">
+                                <a class="btn btn-outline-primary float-right" asp-action="Index">
+                                    Back to List
+                                </a>
+                                <a class="btn btn-success text-white  @((DateTime.Now > Model.ListDate) ? "Available" : "")"
+                                   asp-controller="Orders"asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id"><i class="bi bi-cart-plus"></i> Add to Cart (Price @Model.Price.ToString("c"))</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

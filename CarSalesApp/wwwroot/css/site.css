@@ -18,5 +18,12 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  background-color:mistyrose;
+    margin-bottom: 60px;
+}
+
+.carousel-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
